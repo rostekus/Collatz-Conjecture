@@ -3,6 +3,7 @@ from tkinter import *
 import time 
 import matplotlib.pyplot as plt
 import numpy as np
+from tkinter import filedialog as fd
 
 def end_fun():
     end_label = Label(root, row = 3, column = 0)
@@ -21,20 +22,23 @@ def array_collatz(number):
         i += 1
         x.append(number)
         y.append(i)
-        
     return x,y
-
     
-
 def graph(x,y):
-    plt.plot(x,y)
+    plt.scatter(y,x)
     plt.show()
 
 
-def save_to_csv():
-    with open('collatz.csv', 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["Step", "Number"])
+def save_to_csv(number):
+    filename = fd.asksaveasfilename(filetypes=[("Plik tekstowy","*.csv")], defaultextension = "*.csv") # wywołanie okna dialogowego save file 
+    print(filename)
+    if filename:
+        x, y = array_collatz(number)
+        with open(filename, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Step", "Number"])
+            for X,Y in zip(x,y):
+                writer.writerow([Y,X])
 
 def collatz_fun():
     start = e.get()
@@ -68,15 +72,14 @@ root.title("Collatz Conjecture")
 e = Entry(root, text = 'Enter number')
 e.grid(row =0, columnspan = 2)
 
-start_button = Button(root, text = 'Graph', command = collatz_fun)
-start_button = Button(root, text = 'Save to csv', command = save_to_csv)
+graph_button = Button(root, text = 'Graph', command = lambda: array_collatz(int(e.get())))
+save_button = Button(root, text = 'Save to csv', command = lambda: save_to_csv(int(e.get())))
 
-start_button.grid(row =1, columnspan = 2)
+graph_button.grid(row =2,column = 0)
+save_button.grid(row =2, column = 1)
 
 
-x,y= array_collatz(10)
-print(x)
-print(y)
-graph(y,x)
+
+
 
 root.mainloop()
