@@ -7,18 +7,21 @@ from tkinter import filedialog as fd
 
 def check_int(graph_flag):
     num  = e.get()
-    print()
+    correct_input = False
     try:
         num = int(num)
+        correct_input = True
     except ValueError:
         alert_window =  Toplevel(root)
         alert_window.title('Alert')
         Button(alert_window,text = 'Plese enter integer!', command = alert_window.destroy).pack()
 
-    if graph_flag:
-        graph(num)
-    else:
-        save_to_csv(num)
+        
+    if correct_input:
+        if graph_flag:
+            graph(num)
+        else:
+            save_to_csv(num)
 
 def end_fun():
     end_label = Label(root, row = 3, column = 0)
@@ -53,8 +56,19 @@ def save_to_csv(number):
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["Step", "Number"])
+            max = 0
+            step = 0
             for X,Y in zip(x,y):
                 writer.writerow([Y,X])
+                step += 1
+                if(max < X):
+                    max = X
+            
+            writer.writerow(["Max", max])
+            writer.writerow(["Number of steps", step])
+
+
+
 
 def collatz_fun():
     start = e.get()
